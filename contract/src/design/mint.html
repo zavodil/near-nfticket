@@ -1,0 +1,69 @@
+<script>
+    window.addEventListener( "load", function () {
+        const form = document.getElementById( "mint_nft" );
+
+        form.addEventListener( "submit", function ( event ) {
+            event.preventDefault();
+
+            fetch("https://rest.nearapi.org/sign_url", {
+                method: "POST",
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    account_id: document.getElementById( "account_id" ).value,
+                    method: "nft_mint",
+                    params: {
+                        token_id: document.getElementById( "nft_id" ).value,
+                        receiver_id: document.getElementById( "receiver_id" ).value,
+                        token_metadata:
+                            {
+                                title: document.getElementById( "title" ).value,
+                                description: document.getElementById( "description" ).value,
+                                copies: 1
+                            }
+                    },
+                    deposit: 0.1,
+                    gas: "30000000000000",
+                    receiver_id: "{0}",
+                    meta: "",
+                    callback_url: "https://{0}.page",
+                    network: "{1}"
+                })
+            })
+                .then(resp => resp.text())
+                .then(url => {
+                    console.log("Redirecting to: ", url);
+                    window.location.replace(url);
+            });
+        } );
+    } );
+</script>
+<div style="text-align: initial">
+    <form id="mint_nft">
+        <p>
+            <label for="account_id">Your account:</label>
+            <input type="text" value="{0}" id="account_id">
+        </p>
+
+        <p>
+            <label for="receiver_id">Token Receiver account:</label>
+            <input type="text" value=".{1}" id="receiver_id">
+        </p>
+
+        <p>
+            <label for="nft_id">NFT ID:</label>
+            <input type="text" value="" id="nft_id">
+        </p>
+
+        <p>
+            <label for="title">Token Title:</label>
+            <input type="text" value="NFTicker #N" id="title">
+        </p>
+
+        <p>
+            <label for="description">Token description:</label>
+            <input type="text" value="Ticket to our event" id="description">
+        </p>
+
+        <input type="submit">
+    </form>
+</div>
